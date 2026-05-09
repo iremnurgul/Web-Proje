@@ -1,4 +1,4 @@
-<?php // views/layouts/header.php ?>
+﻿<?php // views/layouts/header.php ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,3 +15,4 @@
     <link rel="stylesheet" href="<?php echo URLROOT; ?>/assets/css/style.css">
 </head>
 <body>
+

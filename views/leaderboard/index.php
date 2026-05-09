@@ -1,54 +1,54 @@
 <?php require '../views/layouts/header.php'; ?>
 
-<div class="wrapper">
+<div class="ls-dashboard-container">
     <?php require '../views/layouts/sidebar.php'; ?>
     
-    <div class="main-content">
+    <div class="ls-main-content">
         <?php require '../views/layouts/navbar.php'; ?>
         
         <div class="content-area">
-            <h1 style="margin-bottom: 24px;">Global Leaderboard 🏆</h1>
+            <h1 style="margin-bottom: 24px;">Sıralamalar (Leaderboard) 🏆</h1>
             
-            <div class="card">
-                <table style="width: 100%; text-align: left; border-collapse: collapse;">
-                    <thead>
-                        <tr style="border-bottom: 1px solid var(--border-color);">
-                            <th style="padding: 15px 10px;">Rank</th>
-                            <th style="padding: 15px 10px;">Student</th>
-                            <th style="padding: 15px 10px;">Course & Quiz</th>
-                            <th style="padding: 15px 10px;">Score</th>
-                            <th style="padding: 15px 10px;">Date</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php if(empty($data['top_scores'])): ?>
-                            <tr>
-                                <td colspan="5" style="padding: 15px 10px; text-align: center;">No scores available yet.</td>
-                            </tr>
-                        <?php else: ?>
-                            <?php foreach($data['top_scores'] as $index => $score): ?>
-                                <tr style="border-bottom: 1px solid var(--border-color); <?php echo ($index < 3) ? 'background-color: rgba(107, 70, 193, 0.1); font-weight: bold;' : ''; ?>">
-                                    <td style="padding: 15px 10px;">
-                                        <?php 
-                                            if($index == 0) echo '🥇 1st';
-                                            elseif($index == 1) echo '🥈 2nd';
-                                            elseif($index == 2) echo '🥉 3rd';
-                                            else echo ($index + 1);
-                                        ?>
-                                    </td>
-                                    <td style="padding: 15px 10px; color: var(--accent);"><?php echo htmlspecialchars($score->username); ?></td>
-                                    <td style="padding: 15px 10px;">
-                                        <div style="font-size: 0.9em;"><?php echo htmlspecialchars($score->quiz_name); ?></div>
-                                        <div style="font-size: 0.8em; color: var(--text-muted);"><?php echo htmlspecialchars($score->course_name); ?></div>
-                                    </td>
-                                    <td style="padding: 15px 10px; color: var(--success);"><?php echo $score->score; ?>%</td>
-                                    <td style="padding: 15px 10px; font-size: 0.8em;"><?php echo date('d M Y', strtotime($score->completed_at)); ?></td>
-                                </tr>
-                            <?php endforeach; ?>
-                        <?php endif; ?>
-                    </tbody>
-                </table>
-            </div>
+            <?php if(empty($data['leaderboard_data'])): ?>
+                <div class="card">
+                    <p style="text-align: center;">Henüz hiçbir sınava ait sıralama verisi bulunmuyor.</p>
+                </div>
+            <?php else: ?>
+                <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(400px, 1fr)); gap: 20px;">
+                    <?php foreach($data['leaderboard_data'] as $board): ?>
+                        <div class="card">
+                            <h3 style="color: var(--primary); margin-bottom: 5px;"><?php echo htmlspecialchars($board['quiz_name']); ?></h3>
+                            <p style="color: var(--text-muted); font-size: 0.9em; margin-bottom: 15px;"><?php echo htmlspecialchars($board['course_name']); ?></p>
+                            
+                            <table style="width: 100%; text-align: left; border-collapse: collapse;">
+                                <thead>
+                                    <tr style="border-bottom: 1px solid var(--border-color);">
+                                        <th style="padding: 10px 5px;">Derece</th>
+                                        <th style="padding: 10px 5px;">Öğrenci</th>
+                                        <th style="padding: 10px 5px;">Puan</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php foreach($board['scores'] as $index => $score): ?>
+                                        <tr style="border-bottom: 1px solid var(--border-color); <?php echo ($index == 0) ? 'background-color: rgba(250, 204, 21, 0.1); font-weight: bold;' : ''; ?>">
+                                            <td style="padding: 10px 5px;">
+                                                <?php 
+                                                    if($index == 0) echo '🥇 1.';
+                                                    elseif($index == 1) echo '🥈 2.';
+                                                    elseif($index == 2) echo '🥉 3.';
+                                                    else echo ($index + 1) . '.';
+                                                ?>
+                                            </td>
+                                            <td style="padding: 10px 5px;"><?php echo htmlspecialchars($score->first_name . ' ' . $score->last_name); ?></td>
+                                            <td style="padding: 10px 5px; color: var(--success);"><?php echo $score->score; ?></td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            <?php endif; ?>
         </div>
     </div>
 </div>

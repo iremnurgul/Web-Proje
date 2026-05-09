@@ -12,3 +12,7 @@ require_once 'Core/Router.php';
 
 // Initialize Session
 Session::init();
+
+// Load Language
+require_once 'Helpers/Language.php';
+Language::load();

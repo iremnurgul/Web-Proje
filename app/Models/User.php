@@ -10,14 +10,16 @@ class User {
 
     // Register User
     public function register($data) {
-        $this->db->query('INSERT INTO users (username, email, password, role) VALUES (:username, :email, :password, :role)');
-        // Bind values
+        $this->db->query('INSERT INTO users (first_name, last_name, user_number, username, email, password, role) VALUES (:first_name, :last_name, :user_number, :username, :email, :password, :role)');
+        
+        $this->db->bind(':first_name', $data['first_name']);
+        $this->db->bind(':last_name', $data['last_name']);
+        $this->db->bind(':user_number', $data['user_number']);
         $this->db->bind(':username', $data['username']);
         $this->db->bind(':email', $data['email']);
         $this->db->bind(':password', $data['password']);
         $this->db->bind(':role', 'student'); // Default role is student
 
-        // Execute
         if ($this->db->execute()) {
             return true;
         } else {
@@ -26,16 +28,15 @@ class User {
     }
 
     // Login User
-    public function login($email, $password) {
-        $this->db->query('SELECT * FROM users WHERE email = :email');
-        $this->db->bind(':email', $email);
+    public function login($user_number, $password) {
+        $this->db->query('SELECT * FROM users WHERE user_number = :user_number');
+        $this->db->bind(':user_number', $user_number);
 
         $row = $this->db->single();
 
         if ($row) {
             $hashedPassword = $row->password;
             if (Security::verifyPassword($password, $hashedPassword)) {
-                // Update last login
                 $this->updateLastLogin($row->id);
                 return $row;
             } else {
@@ -60,9 +61,8 @@ class User {
 
         $row = $this->db->single();
 
-        // Check row
         if ($this->db->rowCount() > 0) {
-            return true;
+            return $row; // Return object if needed, or true
         } else {
             return false;
         }
@@ -72,10 +72,21 @@ class User {
     public function findUserByUsername($username) {
         $this->db->query('SELECT * FROM users WHERE username = :username');
         $this->db->bind(':username', $username);
-
         $row = $this->db->single();
 
-        // Check row
+        if ($this->db->rowCount() > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    // Find user by User Number
+    public function findUserByUserNumber($user_number) {
+        $this->db->query('SELECT * FROM users WHERE user_number = :user_number');
+        $this->db->bind(':user_number', $user_number);
+        $row = $this->db->single();
+
         if ($this->db->rowCount() > 0) {
             return true;
         } else {
@@ -85,10 +96,54 @@ class User {
     
     // Get User By ID
     public function getUserById($id) {
-        $this->db->query('SELECT id, username, email, role, created_at FROM users WHERE id = :id');
+        $this->db->query('SELECT id, first_name, last_name, user_number, username, email, role, created_at FROM users WHERE id = :id');
         $this->db->bind(':id', $id);
         
         $row = $this->db->single();
         return $row;
+    }
+
+    // Update Profile
+    public function updateProfile($data) {
+        if(!empty($data['password'])) {
+            $this->db->query('UPDATE users SET first_name = :fn, last_name = :ln, email = :em, password = :pwd WHERE id = :id');
+            $this->db->bind(':pwd', $data['password']);
+        } else {
+            $this->db->query('UPDATE users SET first_name = :fn, last_name = :ln, email = :em WHERE id = :id');
+        }
+        $this->db->bind(':fn', $data['first_name']);
+        $this->db->bind(':ln', $data['last_name']);
+        $this->db->bind(':em', $data['email']);
+        $this->db->bind(':id', $data['id']);
+
+        return $this->db->execute();
+    }
+
+    // Create Password Reset Token
+    public function createPasswordResetToken($email, $token, $expires) {
+        $this->db->query('UPDATE users SET reset_token = :token, reset_expires = :expires WHERE email = :email');
+        $this->db->bind(':token', $token);
+        $this->db->bind(':expires', $expires);
+        $this->db->bind(':email', $email);
+        return $this->db->execute();
+    }
+
+    // Find User by Reset Token
+    public function findUserByResetToken($token) {
+        $this->db->query('SELECT * FROM users WHERE reset_token = :token AND reset_expires > NOW()');
+        $this->db->bind(':token', $token);
+        $row = $this->db->single();
+        if($this->db->rowCount() > 0){
+            return $row;
+        }
+        return false;
+    }
+
+    // Reset Password
+    public function resetPassword($id, $newPassword) {
+        $this->db->query('UPDATE users SET password = :password, reset_token = NULL, reset_expires = NULL WHERE id = :id');
+        $this->db->bind(':password', $newPassword);
+        $this->db->bind(':id', $id);
+        return $this->db->execute();
     }
 }

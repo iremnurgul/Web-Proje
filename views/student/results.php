@@ -1,28 +1,28 @@
 <?php require '../views/layouts/header.php'; ?>
 
-<div class="wrapper">
+<div class="ls-dashboard-container">
     <?php require '../views/layouts/sidebar.php'; ?>
     
-    <div class="main-content">
+    <div class="ls-main-content">
         <?php require '../views/layouts/navbar.php'; ?>
         
         <div class="content-area">
-            <h1 style="margin-bottom: 24px;">My Results</h1>
+            <h1 style="margin-bottom: 24px;">Sonuçlarım</h1>
             
             <div class="card">
                 <table style="width: 100%; text-align: left; border-collapse: collapse;">
                     <thead>
                         <tr style="border-bottom: 1px solid var(--border-color);">
-                            <th style="padding: 10px;">Quiz Name</th>
-                            <th style="padding: 10px;">Course Name</th>
-                            <th style="padding: 10px;">Score</th>
-                            <th style="padding: 10px;">Date Completed</th>
+                            <th style="padding: 10px;">Sınav Adı</th>
+                            <th style="padding: 10px;">Ders</th>
+                            <th style="padding: 10px;">Puan</th>
+                            <th style="padding: 10px;">Tamamlama Tarihi</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php if(empty($data['results'])): ?>
                             <tr>
-                                <td colspan="4" style="padding: 10px; text-align: center;">You have not completed any quizzes yet.</td>
+                                <td colspan="4" style="padding: 10px; text-align: center;">Henüz hiçbir sınavı tamamlamadınız.</td>
                             </tr>
                         <?php else: ?>
                             <?php foreach($data['results'] as $result): ?>

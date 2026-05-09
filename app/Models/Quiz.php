@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 // app/Models/Quiz.php
 
 class Quiz {
@@ -26,7 +26,7 @@ class Quiz {
         $this->db->bind(':is_active', $data['is_active']);
 
         if ($this->db->execute()) {
-            return true;
+            return $this->db->lastInsertId();
         } else {
             return false;
         }
@@ -55,3 +55,4 @@ class Quiz {
         return $this->db->resultSet();
     }
 }
+

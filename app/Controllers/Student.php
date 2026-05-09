@@ -45,6 +45,53 @@ class Student extends Controller {
         $this->view('student/dashboard', $data);
     }
 
+    public function profile() {
+        $userModel = $this->model('User');
+        $user = $userModel->getUserById($_SESSION['user_id']);
+
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $_POST = Security::sanitize($_POST);
+            $data = [
+                'id' => $_SESSION['user_id'],
+                'first_name' => trim($_POST['first_name']),
+                'last_name' => trim($_POST['last_name']),
+                'email' => trim($_POST['email']),
+                'password' => trim($_POST['password']),
+                'confirm_password' => trim($_POST['confirm_password']),
+                'error' => ''
+            ];
+
+            if(!empty($data['password']) && $data['password'] !== $data['confirm_password']) {
+                $data['error'] = 'Şifreler eşleşmiyor.';
+            }
+
+            if(empty($data['error'])) {
+                if(!empty($data['password'])) {
+                    $data['password'] = Security::hashPassword($data['password']);
+                }
+                
+                if($userModel->updateProfile($data)) {
+                    $_SESSION['user_first_name'] = $data['first_name'];
+                    $_SESSION['user_last_name'] = $data['last_name'];
+                    Session::flash('profile_success', 'Profiliniz başarıyla güncellendi.');
+                    header('Location: ' . URLROOT . '/student/profile');
+                    exit;
+                } else {
+                    $data['error'] = 'Güncelleme sırasında bir hata oluştu.';
+                }
+            }
+            
+            $data['user'] = $user;
+            $this->view('student/profile', $data);
+        } else {
+            $data = [
+                'user' => $user,
+                'error' => ''
+            ];
+            $this->view('student/profile', $data);
+        }
+    }
+
     public function results() {
         $db = new Database();
         $db->query('
@@ -217,7 +264,7 @@ class Student extends Controller {
 
             // Normalize score to 100
             $final_score = ($max_score > 0) ? ($total_score / $max_score) * 100 : 0;
-            $final_score = round(max(0, $final_score)); // Round to nearest integer and don't go below zero
+            $final_score = round(max(0, $final_score) / 10) * 10; // En yakın 10'un katına yuvarla
 
             if ($this->resultModel->saveResult($student_id, $quiz_id, $final_score)) {
                 

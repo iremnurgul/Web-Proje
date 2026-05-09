@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 // app/Controllers/Teacher.php
 
 require_once '../app/Helpers/Middleware.php';
@@ -39,27 +39,53 @@ class Teacher extends Controller {
         $this->view('teacher/courses', $data);
     }
 
-    public function addCourse() {
+    public function profile() {
+        $userModel = $this->model('User');
+        $user = $userModel->getUserById($_SESSION['user_id']);
+
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            if (!Security::verifyCsrfToken($_POST['csrf_token'])) {
-                echo json_encode(['success' => false, 'message' => 'CSRF Token Failed']);
-                exit;
-            }
-
             $_POST = Security::sanitize($_POST);
-
             $data = [
-                'course_name' => trim($_POST['course_name']),
-                'teacher_id' => $_SESSION['user_id']
+                'id' => $_SESSION['user_id'],
+                'first_name' => trim($_POST['first_name']),
+                'last_name' => trim($_POST['last_name']),
+                'email' => trim($_POST['email']),
+                'password' => trim($_POST['password']),
+                'confirm_password' => trim($_POST['confirm_password']),
+                'error' => ''
             ];
 
-            if ($this->courseModel->addCourse($data)) {
-                echo json_encode(['success' => true, 'message' => 'Course added successfully']);
-            } else {
-                echo json_encode(['success' => false, 'message' => 'Failed to add course']);
+            if(!empty($data['password']) && $data['password'] !== $data['confirm_password']) {
+                $data['error'] = 'Åifreler eÅŸleÅŸmiyor.';
             }
+
+            if(empty($data['error'])) {
+                if(!empty($data['password'])) {
+                    $data['password'] = Security::hashPassword($data['password']);
+                }
+                
+                if($userModel->updateProfile($data)) {
+                    $_SESSION['user_first_name'] = $data['first_name'];
+                    $_SESSION['user_last_name'] = $data['last_name'];
+                    Session::flash('profile_success', 'Profiliniz baÅŸarÄ±yla gÃ¼ncellendi.');
+                    header('Location: ' . URLROOT . '/teacher/profile');
+                    exit;
+                } else {
+                    $data['error'] = 'GÃ¼ncelleme sÄ±rasÄ±nda bir hata oluÅŸtu.';
+                }
+            }
+            
+            $data['user'] = $user;
+            $this->view('teacher/profile', $data);
+        } else {
+            $data = [
+                'user' => $user,
+                'error' => ''
+            ];
+            $this->view('teacher/profile', $data);
         }
     }
+
 
     public function courseDetails($course_id) {
         $db = new Database();
@@ -128,8 +154,8 @@ class Teacher extends Controller {
                 'is_active' => isset($_POST['is_active']) ? 1 : 0
             ];
 
-            if ($this->quizModel->addQuiz($data)) {
-                echo json_encode(['success' => true, 'message' => 'Quiz added successfully']);
+            if ($quiz_id = $this->quizModel->addQuiz($data)) {
+                echo json_encode(['success' => true, 'message' => 'Quiz added successfully', 'quiz_id' => $quiz_id]);
             } else {
                 echo json_encode(['success' => false, 'message' => 'Failed to add quiz']);
             }
@@ -344,3 +370,4 @@ class Teacher extends Controller {
         }
     }
 }
+

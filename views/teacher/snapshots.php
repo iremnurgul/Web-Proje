@@ -1,20 +1,20 @@
 <?php require '../views/layouts/header.php'; ?>
 
-<div class="wrapper">
+<div class="ls-dashboard-container">
     <?php require '../views/layouts/sidebar.php'; ?>
     
-    <div class="main-content">
+    <div class="ls-main-content">
         <?php require '../views/layouts/navbar.php'; ?>
         
         <div class="content-area">
-            <h1 style="margin-bottom: 5px;">Proctoring: <?php echo htmlspecialchars($data['student']->username); ?></h1>
-            <p style="color: var(--text-muted); margin-bottom: 24px;">Quiz: <?php echo htmlspecialchars($data['quiz']->quiz_name); ?></p>
+            <h1 style="margin-bottom: 5px;">Gözetmenlik: <?php echo htmlspecialchars($data['student']->username); ?></h1>
+            <p style="color: var(--text-muted); margin-bottom: 24px;">Sınav: <?php echo htmlspecialchars($data['quiz']->quiz_name); ?></p>
             
-            <a href="<?php echo URLROOT; ?>/teacher/quizzes" class="btn btn-primary" style="width: auto; margin-bottom: 20px;">Back to Quizzes</a>
+            <a href="<?php echo URLROOT; ?>/teacher/quizzes" class="btn btn-primary" style="width: auto; margin-bottom: 20px;">Sınavlara Dön</a>
 
             <div class="card">
                 <?php if(empty($data['snapshots'])): ?>
-                    <p style="text-align: center; color: var(--text-muted);">No snapshots available for this session.</p>
+                    <p style="text-align: center; color: var(--text-muted);">Bu oturum için gözetmenlik fotoğrafı bulunmuyor.</p>
                 <?php else: ?>
                     <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px;">
                         <?php foreach($data['snapshots'] as $index => $snap): ?>

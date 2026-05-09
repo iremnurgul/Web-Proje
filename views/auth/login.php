@@ -2,32 +2,40 @@
 
 <div class="auth-container">
     <div class="auth-card">
-        <h2>Login to Quiz System</h2>
+        <div class="auth-header">
+            <h2>QUİZBOX'e Giriş</h2>
+            <p>Eğitim platformuna hoş geldiniz.</p>
+        </div>
         
         <?php Session::flash('register_success'); ?>
+        <?php Session::flash('register_error'); ?>
         <?php Session::flash('auth_error'); ?>
 
         <form action="<?php echo URLROOT; ?>/auth/login" method="POST">
             <input type="hidden" name="csrf_token" value="<?php echo Security::generateCsrfToken(); ?>">
             
             <div class="form-group">
-                <label for="email">Email</label>
-                <input type="email" name="email" class="form-control <?php echo (!empty($data['email_err'])) ? 'is-invalid' : ''; ?>" value="<?php echo $data['email']; ?>" autofocus>
-                <span class="invalid-feedback"><?php echo $data['email_err']; ?></span>
+                <label for="user_number">Öğrenci / Öğretmen Numarası</label>
+                <input type="number" inputmode="numeric" pattern="[0-9]*" name="user_number" class="form-control <?php echo (!empty($data['user_number_err'])) ? 'is-invalid' : ''; ?>" value="<?php echo isset($data['user_number']) ? $data['user_number'] : ''; ?>" placeholder="Örn: 1001" autofocus>
+                <span class="invalid-feedback"><?php echo isset($data['user_number_err']) ? $data['user_number_err'] : ''; ?></span>
             </div>
 
             <div class="form-group">
-                <label for="password">Password</label>
+                <label for="password">Şifre</label>
                 <input type="password" name="password" class="form-control <?php echo (!empty($data['password_err'])) ? 'is-invalid' : ''; ?>">
-                <span class="invalid-feedback"><?php echo $data['password_err']; ?></span>
+                <span class="invalid-feedback"><?php echo isset($data['password_err']) ? $data['password_err'] : ''; ?></span>
             </div>
 
-            <div class="form-group">
-                <button type="submit" class="btn btn-primary btn-block">Login</button>
+            <div class="form-group forgot-password-link">
+                <a href="<?php echo URLROOT; ?>/auth/forgot_password">Şifremi Unuttum</a>
             </div>
 
-            <div class="text-center mt-3">
-                <a href="<?php echo URLROOT; ?>/auth/register">Don't have an account? Register</a>
+            <div class="form-group mt-4">
+                <button type="submit" class="btn btn-primary btn-block">Giriş Yap</button>
+            </div>
+
+            <div class="text-center mt-3 auth-footer">
+                <p>Hesabınız yok mu? <a href="<?php echo URLROOT; ?>/auth/register">Kayıt Ol</a></p>
             </div>
         </form>
     </div>

@@ -109,12 +109,12 @@
 <!-- PRE-EXAM OVERLAY -->
 <div id="preExamOverlay">
     <i class="fa-solid fa-expand" style="font-size: 4rem; color: var(--primary); margin-bottom: 20px; filter: drop-shadow(0 0 10px var(--primary-glow));"></i>
-    <h1 style="margin-bottom: 10px;">Fullscreen Required</h1>
+    <h1 style="margin-bottom: 10px;">Tam Ekran Zorunlu</h1>
     <p style="color: var(--text-muted); max-width: 500px; margin-bottom: 30px;">
-        This exam requires you to be in full-screen mode and <strong>requires your Webcam to be turned on</strong> for proctoring. If you press ESC or exit full-screen mode, your exam will be automatically submitted!
+        Bu sınav tam ekranda yapılmalıdır ve <strong>kamera izni verilmesi zorunludur</strong> . Eğer ESC tuşuna basar veya tam ekrandan çıkarsanız sınavınız otomatik olarak sonlandırılacaktır!
     </p>
     <button id="startFullscreenBtn" class="btn btn-primary" style="width: auto; font-size: 1.2rem; padding: 15px 40px;">
-        Allow Camera, Enter Fullscreen & Start Exam
+        Kameraya İzin Ver, Tam Ekrana Geç ve Sınava Başla
     </button>
 </div>
 
@@ -137,10 +137,10 @@
         <div style="display: flex; gap: 30px; align-items: flex-start;">
             <!-- Navigation Sidebar -->
             <div style="width: 250px; background: var(--glass-bg); padding: 20px; border-radius: 16px; border: 1px solid var(--border-color); box-shadow: var(--card-shadow);">
-                <h3 style="margin-bottom: 15px; text-align: center; color: var(--primary);">Questions</h3>
+                <h3 style="margin-bottom: 15px; text-align: center; color: var(--primary);">Sorular</h3>
                 <div style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;">
                     <?php foreach($data['questions'] as $index => $question): ?>
-                        <div id="nav-circle-<?php echo $index; ?>" onclick="goToQuestion(<?php echo $index; ?>)" 
+                        <div id="nav-circle-<?php echo $index; ?>" onclick="goToSoru(<?php echo $index; ?>)" 
                              style="width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,0.05); border: 2px solid var(--border-color); display: flex; align-items: center; justify-content: center; cursor: pointer; font-weight: bold; transition: all 0.3s; color: var(--text-color);">
                             <?php echo ($index + 1); ?>
                         </div>
@@ -148,11 +148,11 @@
                 </div>
                 
                 <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--border-color); text-align: center;">
-                    <button type="button" class="btn btn-primary" id="submitQuizBtn" style="width: 100%; font-size: 1.1rem; background-color: var(--danger);">Finish Exam</button>
+                    <button type="button" class="btn btn-primary" id="submitQuizBtn" style="width: 100%; font-size: 1.1rem; background-color: var(--danger);">Sınavı Bitir</button>
                 </div>
             </div>
 
-            <!-- Main Question Area -->
+            <!-- Main Soru Area -->
             <div style="flex: 1;">
                 <form id="quizForm">
                     <input type="hidden" name="quiz_id" value="<?php echo $data['quiz']->id; ?>">
@@ -160,13 +160,13 @@
                     <?php foreach($data['questions'] as $index => $question): ?>
                         <div class="question-card question-slide" id="question-slide-<?php echo $index; ?>" style="<?php echo $index === 0 ? '' : 'display: none;'; ?>">
                             <h4 style="font-size: 1.3rem; margin-bottom: 10px;">
-                                <span style="color: var(--primary);">Question <?php echo ($index + 1); ?>:</span> <?php echo htmlspecialchars($question->question_text); ?>
+                                <span style="color: var(--primary);">Soru <?php echo ($index + 1); ?>:</span> <?php echo htmlspecialchars($question->question_text); ?>
                             </h4>
-                            <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 20px;">Points: <?php echo $question->points; ?></p>
+                            <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 20px;">Puan: <?php echo $question->points; ?></p>
                             
                             <?php if(!empty($question->image_path)): ?>
                                 <div style="margin-bottom: 25px; text-align: center; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 10px;">
-                                    <img src="<?php echo URLROOT . '/' . htmlspecialchars($question->image_path); ?>" alt="Question Image" style="max-width: 100%; max-height: 400px; border-radius: 8px;">
+                                    <img src="<?php echo URLROOT . '/' . htmlspecialchars($question->image_path); ?>" alt="Soru Image" style="max-width: 100%; max-height: 400px; border-radius: 8px;">
                                 </div>
                             <?php endif; ?>
 
@@ -190,12 +190,12 @@
                             </ul>
                             
                             <div style="display: flex; justify-content: space-between; margin-top: 30px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1);">
-                                <button type="button" class="btn btn-primary" onclick="goToQuestion(<?php echo $index - 1; ?>)" <?php echo $index === 0 ? 'disabled style="opacity:0.5; cursor:not-allowed;"' : ''; ?> style="width: 150px; background-color: var(--secondary);">Previous</button>
+                                <button type="button" class="btn btn-primary" onclick="goToSoru(<?php echo $index - 1; ?>)" <?php echo $index === 0 ? 'disabled style="opacity:0.5; cursor:not-allowed;"' : ''; ?> style="width: 150px; background-color: var(--secondary);">Önceki</button>
                                 
                                 <?php if($index === count($data['questions']) - 1): ?>
-                                    <button type="button" class="btn btn-primary" onclick="document.getElementById('submitQuizBtn').click()" style="width: 150px; background-color: var(--success);">Finish</button>
+                                    <button type="button" class="btn btn-primary" onclick="document.getElementById('submitQuizBtn').click()" style="width: 150px; background-color: var(--success);">Bitir</button>
                                 <?php else: ?>
-                                    <button type="button" class="btn btn-primary" onclick="goToQuestion(<?php echo $index + 1; ?>)" style="width: 150px;">Next</button>
+                                    <button type="button" class="btn btn-primary" onclick="goToSoru(<?php echo $index + 1; ?>)" style="width: 150px;">Sonraki</button>
                                 <?php endif; ?>
                             </div>
                         </div>
@@ -215,17 +215,17 @@ document.addEventListener('DOMContentLoaded', function() {
     let isSubmitted = false;
     let timerInterval = null;
     let examStarted = false;
-    let totalQuestions = <?php echo count($data['questions']); ?>;
-    let currentQuestionIndex = 0;
+    let totalSorular = <?php echo count($data['questions']); ?>;
+    let currentSoruIndex = 0;
     
     // Highlight the first question circle initially
-    if(totalQuestions > 0) {
+    if(totalSorular > 0) {
         document.getElementById('nav-circle-0').style.borderColor = 'var(--primary)';
         document.getElementById('nav-circle-0').style.boxShadow = '0 0 10px var(--primary)';
     }
 
-    window.goToQuestion = function(index) {
-        if (index < 0 || index >= totalQuestions) return;
+    window.goToSoru = function(index) {
+        if (index < 0 || index >= totalSorular) return;
         
         // Hide all
         document.querySelectorAll('.question-slide').forEach(el => el.style.display = 'none');
@@ -247,7 +247,7 @@ document.addEventListener('DOMContentLoaded', function() {
         activeCircle.style.borderColor = 'var(--primary)';
         activeCircle.style.boxShadow = '0 0 10px var(--primary)';
         
-        currentQuestionIndex = index;
+        currentSoruIndex = index;
     };
 
     window.markAnswered = function(index) {
@@ -291,7 +291,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 elem.msRequestFullscreen();
                 startExam();
             } else {
-                alert("Your browser does not support fullscreen. Starting anyway.");
+                alert("Tarayıcınız tam ekran desteklemiyor. Sınav başlatılıyor.");
                 startExam(); // Fallback if browser doesn't support it at all
             }
         } catch (err) {
@@ -313,7 +313,7 @@ document.addEventListener('DOMContentLoaded', function() {
         timerInterval = setInterval(() => {
             if(timeRemaining <= 0) {
                 clearInterval(timerInterval);
-                if(!isSubmitted) autoSubmit("Time is up! Your answers are being submitted automatically.");
+                if(!isSubmitted) autoSubmit("Süre doldu! Cevaplarınız otomatik olarak gönderiliyor.");
                 return;
             }
             
@@ -367,14 +367,14 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!document.fullscreenElement && !document.webkitIsFullScreen && !document.mozFullScreen && !document.msFullscreenElement) {
             // User exited full screen!
             if(examStarted && !isSubmitted) {
-                autoSubmit("You exited Fullscreen Mode! The exam has been terminated and automatically submitted.");
+                autoSubmit("Tam ekrandan çıktığınız için sınavınız sonlandırıldı ve cevaplarınız gönderildi.");
             }
         }
     }
 
     // Submission Logic
     document.getElementById('submitQuizBtn').addEventListener('click', function() {
-        if(confirm("Are you sure you want to submit your answers?")) {
+        if(confirm("Cevaplarınızı göndermek istediğinize emin misiniz?")) {
             submitForm();
         }
     });
@@ -398,9 +398,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     <div style="display:flex; justify-content:center; align-items:center; height:100vh;">
                         <div class="card" style="text-align:center; max-width: 500px;">
                             <i class="fa-solid fa-circle-check" style="font-size: 5rem; color: var(--success); margin-bottom: 20px; filter: drop-shadow(0 0 15px rgba(16,185,129,0.5));"></i>
-                            <h2>Quiz Submitted Successfully!</h2>
+                            <h2>Sınav Başarıyla Gönderildi!</h2>
                             <h1 style="color:var(--success); font-size:4rem; margin: 20px 0;">${response.score} / 100</h1>
-                            <a href="<?php echo URLROOT; ?>/student/dashboard" class="btn btn-primary" style="margin-top:20px; width:auto;">Return to Dashboard</a>
+                            <a href="<?php echo URLROOT; ?>/student/dashboard" class="btn btn-primary" style="margin-top:20px; width:auto;">Panele Dön</a>
                         </div>
                     </div>
                 `;
@@ -421,7 +421,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         } catch (error) {
             console.error(error);
-            alert("An error occurred while submitting. Please try again.");
+            alert("Gönderim sırasında bir hata oluştu. Lütfen tekrar deneyin.");
             isSubmitted = false; // Allow retry
         }
     }

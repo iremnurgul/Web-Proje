@@ -1,23 +1,23 @@
 <?php require '../views/layouts/header.php'; ?>
 
-<div class="wrapper">
+<div class="ls-dashboard-container">
     <?php require '../views/layouts/sidebar.php'; ?>
     
-    <div class="main-content">
+    <div class="ls-main-content">
         <?php require '../views/layouts/navbar.php'; ?>
         
         <div class="content-area">
-            <h1 style="margin-bottom: 24px;">Manage Quizzes</h1>
+            <h1 style="margin-bottom: 24px;">Sınav (Quiz) Yönetimi</h1>
             
             <div class="card">
-                <div class="card-title">Add New Quiz</div>
+                <div class="card-title">Yeni Sınav Oluştur</div>
                 <form id="addQuizForm">
                     <input type="hidden" name="csrf_token" id="csrf_token" value="<?php echo Security::generateCsrfToken(); ?>">
                     
                     <div class="form-group">
-                        <label>Select Course</label>
+                        <label>Ders Seçin</label>
                         <select name="course_id" class="form-control" required>
-                            <option value="">-- Select Course --</option>
+                            <option value="">-- Ders Seçin --</option>
                             <?php foreach($data['courses'] as $course): ?>
                                 <option value="<?php echo $course->id; ?>"><?php echo htmlspecialchars($course->course_name); ?></option>
                             <?php endforeach; ?>
@@ -25,27 +25,27 @@
                     </div>
 
                     <div class="form-group">
-                        <label>Quiz Name</label>
+                        <label>Sınav (Quiz) Adı</label>
                         <input type="text" name="quiz_name" class="form-control" required>
                     </div>
 
                     <div style="display: flex; gap: 15px;">
                         <div class="form-group" style="flex: 1;">
-                            <label>Start Date</label>
+                            <label>Başlangıç Tarihi (Otomatik Aktif Olur)</label>
                             <div style="position: relative; display: flex; align-items: center;">
                                 <input type="datetime-local" name="start_date" class="form-control" required style="padding-right: 40px; cursor: pointer;" onclick="this.showPicker()">
                                 <i class="fa-solid fa-calendar-days" style="position: absolute; right: 15px; color: var(--primary); cursor: pointer; pointer-events: none;"></i>
                             </div>
                         </div>
                         <div class="form-group" style="flex: 1;">
-                            <label>End Date</label>
+                            <label>Bitiş Tarihi</label>
                             <div style="position: relative; display: flex; align-items: center;">
                                 <input type="datetime-local" name="end_date" class="form-control" required style="padding-right: 40px; cursor: pointer;" onclick="this.showPicker()">
                                 <i class="fa-solid fa-calendar-days" style="position: absolute; right: 15px; color: var(--primary); cursor: pointer; pointer-events: none;"></i>
                             </div>
                         </div>
                         <div class="form-group" style="flex: 1;">
-                            <label>Duration (Minutes)</label>
+                            <label>Süre (Dakika)</label>
                             <input type="number" name="duration" class="form-control" min="1" value="30" required>
                         </div>
                     </div>
@@ -53,49 +53,50 @@
                     <div class="form-group">
                         <label style="display: inline-flex; align-items: center; gap: 10px; cursor: pointer;">
                             <input type="checkbox" name="is_active" checked>
-                            Is Active?
+                            Şu an aktif olsun mu? (Daha sonra değiştirebilirsiniz)
                         </label>
                     </div>
 
-                    <button type="submit" class="btn btn-primary">Create Quiz</button>
+                    <button type="submit" class="btn btn-primary">Sınavı Oluştur</button>
                     <div id="quizMessage" style="margin-top: 10px;"></div>
                 </form>
             </div>
             
             <div class="card">
-                <div class="card-title">Quiz List</div>
+                <div class="card-title">Sınav Listesi</div>
                 <table style="width: 100%; text-align: left; border-collapse: collapse;">
                     <thead>
                         <tr style="border-bottom: 1px solid var(--border-color);">
-                            <th style="padding: 10px;">Quiz Name</th>
-                            <th style="padding: 10px;">Course</th>
-                            <th style="padding: 10px;">Duration</th>
-                            <th style="padding: 10px;">Status</th>
-                            <th style="padding: 10px;">Actions</th>
+                            <th style="padding: 10px;">Sınav Adı</th>
+                            <th style="padding: 10px;">Ders</th>
+                            <th style="padding: 10px;">Süre</th>
+                            <th style="padding: 10px;">Durum</th>
+                            <th style="padding: 10px;">İşlemler</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php if(empty($data['quizzes'])): ?>
                             <tr>
-                                <td colspan="5" style="padding: 10px; text-align: center;">No quizzes found.</td>
+                                <td colspan="5" style="padding: 10px; text-align: center;">Kayıtlı sınav bulunmuyor.</td>
                             </tr>
                         <?php else: ?>
                             <?php foreach($data['quizzes'] as $quiz): ?>
                                 <tr style="border-bottom: 1px solid var(--border-color);">
                                     <td style="padding: 10px;"><?php echo htmlspecialchars($quiz->quiz_name); ?></td>
                                     <td style="padding: 10px;"><?php echo htmlspecialchars($quiz->course_name); ?></td>
-                                    <td style="padding: 10px;"><?php echo $quiz->duration; ?> mins</td>
+                                    <td style="padding: 10px;"><?php echo $quiz->duration; ?> dk</td>
                                     <td style="padding: 10px;">
                                         <?php if($quiz->is_active): ?>
-                                            <span style="color: var(--success);">Active</span>
+                                            <span style="color: var(--success);">Aktif</span>
                                         <?php else: ?>
-                                            <span style="color: var(--danger);">Inactive</span>
+                                            <span style="color: var(--danger);">Pasif</span>
                                         <?php endif; ?>
+                                        
                                     </td>
                                     <td style="padding: 10px;">
-                                        <a href="<?php echo URLROOT; ?>/teacher/manageQuestions/<?php echo $quiz->id; ?>" class="btn btn-primary" style="padding: 5px 10px; font-size: 0.8rem; width: auto; background-color: var(--accent); margin-right: 5px;">Manage Questions</a>
+                                        <a href="<?php echo URLROOT; ?>/teacher/manageQuestions/<?php echo $quiz->id; ?>" class="btn btn-primary" style="padding: 5px 10px; font-size: 0.8rem; width: auto; background-color: var(--accent); margin-right: 5px;">Soruları Yönet</a>
                                         <a href="<?php echo URLROOT; ?>/teacher/quizResults/<?php echo $quiz->id; ?>" class="btn btn-primary" style="padding: 5px 10px; font-size: 0.8rem; width: auto; background-color: var(--success);">
-                                            <i class="fa-solid fa-square-poll-vertical"></i> Results & Photos
+                                            <i class="fa-solid fa-square-poll-vertical"></i> Sonuçlar ve Fotoğraflar
                                         </a>
                                     </td>
                                 </tr>
@@ -121,7 +122,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 const msgDiv = document.getElementById('quizMessage');
                 if (response.success) {
                     msgDiv.innerHTML = `<span style="color: var(--success);">${response.message}</span>`;
-                    setTimeout(() => location.reload(), 1000);
+                    setTimeout(() => window.location.href = '<?php echo URLROOT; ?>/teacher/manageQuestions/' + response.quiz_id, 500);
                 } else {
                     msgDiv.innerHTML = `<span style="color: var(--danger);">${response.message}</span>`;
                 }
@@ -129,8 +130,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.error(error);
             }
         });
-    }
+        }
 });
+
+
 </script>
 
 <?php require '../views/layouts/footer.php'; ?>
