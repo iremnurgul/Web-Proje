@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 // app/Models/Quiz.php
 
 class Quiz {
@@ -53,6 +53,13 @@ class Quiz {
         ');
         $this->db->bind(':student_id', $student_id);
         return $this->db->resultSet();
+    }
+
+    // Delete Quiz
+    public function deleteQuiz($id) {
+        $this->db->query('DELETE FROM quizzes WHERE id = :id');
+        $this->db->bind(':id', $id);
+        return $this->db->execute();
     }
 }
 

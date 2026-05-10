@@ -47,8 +47,17 @@ class Auth extends Controller {
             } elseif (!is_numeric($data['user_number'])) {
                 $data['user_number_err'] = 'Numara sadece rakamlardan oluşmalıdır';
             } else {
-                if ($this->userModel->findUserByUserNumber($data['user_number'])) {
-                    $data['user_number_err'] = 'Bu numara zaten kayıtlı';
+                $existingUser = $this->userModel->findUserByUserNumber($data['user_number']);
+                if (!$existingUser) {
+                    $data['user_number_err'] = 'Sisteme kayıtlı böyle bir okul numarası bulunamadı';
+                } else {
+                    // Check if names match
+                    if (mb_strtolower(trim($existingUser->first_name), 'UTF-8') !== mb_strtolower($data['first_name'], 'UTF-8') ||
+                        mb_strtolower(trim($existingUser->last_name), 'UTF-8') !== mb_strtolower($data['last_name'], 'UTF-8')) {
+                        $data['user_number_err'] = 'Girdiğiniz Ad/Soyad sistemdeki kayıtlarla uyuşmuyor';
+                    } else if (!empty($existingUser->username) || !empty($existingUser->password)) {
+                        $data['user_number_err'] = 'Bu hesap zaten aktifleştirilmiş';
+                    }
                 }
             }
 
@@ -86,8 +95,8 @@ class Auth extends Controller {
                 
                 $data['password'] = Security::hashPassword($data['password']);
 
-                if ($this->userModel->register($data)) {
-                    Session::flash('register_success', 'Kayıt başarılı, giriş yapabilirsiniz.');
+                if ($this->userModel->completeRegistration($data)) {
+                    Session::flash('register_success', 'Hesabınız başarıyla aktifleştirildi, giriş yapabilirsiniz.');
                     header('Location: ' . URLROOT . '/auth/login');
                 } else {
                     die('Bir şeyler yanlış gitti');

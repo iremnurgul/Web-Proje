@@ -8,17 +8,14 @@ class User {
         $this->db = new Database();
     }
 
-    // Register User
-    public function register($data) {
-        $this->db->query('INSERT INTO users (first_name, last_name, user_number, username, email, password, role) VALUES (:first_name, :last_name, :user_number, :username, :email, :password, :role)');
+    // Complete Registration (Update existing user)
+    public function completeRegistration($data) {
+        $this->db->query('UPDATE users SET username = :username, email = :email, password = :password WHERE user_number = :user_number');
         
-        $this->db->bind(':first_name', $data['first_name']);
-        $this->db->bind(':last_name', $data['last_name']);
         $this->db->bind(':user_number', $data['user_number']);
         $this->db->bind(':username', $data['username']);
         $this->db->bind(':email', $data['email']);
         $this->db->bind(':password', $data['password']);
-        $this->db->bind(':role', 'student'); // Default role is student
 
         if ($this->db->execute()) {
             return true;
@@ -88,7 +85,7 @@ class User {
         $row = $this->db->single();
 
         if ($this->db->rowCount() > 0) {
-            return true;
+            return $row;
         } else {
             return false;
         }

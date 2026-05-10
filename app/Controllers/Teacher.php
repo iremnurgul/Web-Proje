@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 // app/Controllers/Teacher.php
 
 require_once '../app/Helpers/Middleware.php';
@@ -159,6 +159,34 @@ class Teacher extends Controller {
             } else {
                 echo json_encode(['success' => false, 'message' => 'Failed to add quiz']);
             }
+        }
+    }
+
+    public function deleteQuiz($id) {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            if (!Security::verifyCsrfToken($_POST['csrf_token'])) {
+                echo json_encode(['success' => false, 'message' => 'CSRF Token Failed']);
+                exit;
+            }
+            
+            // Check ownership
+            $quiz = $this->quizModel->getQuizById($id);
+            if ($quiz) {
+                // Ensure teacher owns it
+                $db = new Database();
+                $db->query('SELECT * FROM courses WHERE id = :course_id AND teacher_id = :teacher_id');
+                $db->bind(':course_id', $quiz->course_id);
+                $db->bind(':teacher_id', $_SESSION['user_id']);
+                $course = $db->single();
+                
+                if ($course) {
+                    if ($this->quizModel->deleteQuiz($id)) {
+                        echo json_encode(['success' => true, 'message' => 'Sınav başarıyla silindi']);
+                        return;
+                    }
+                }
+            }
+            echo json_encode(['success' => false, 'message' => 'Silme işlemi başarısız veya yetkisiz']);
         }
     }
 

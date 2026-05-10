@@ -3,8 +3,8 @@
 <div class="auth-container">
     <div class="auth-card register-card">
         <div class="auth-header">
-            <h2>Öğrenci Kaydı</h2>
-            <p>QUİZBOX'e katılın.</p>
+            <h2>Hesap Aktifleştirme</h2>
+            <p>Sisteme giriş için hesabınızı tamamlayın.</p>
         </div>
         
         <form action="<?php echo URLROOT; ?>/auth/register" method="POST">
@@ -25,8 +25,8 @@
 
             <div class="form-row">
                 <div class="form-group col">
-                    <label for="user_number">Öğrenci Numarası</label>
-                    <input type="number" inputmode="numeric" pattern="[0-9]*" name="user_number" class="form-control <?php echo (!empty($data['user_number_err'])) ? 'is-invalid' : ''; ?>" value="<?php echo isset($data['user_number']) ? $data['user_number'] : ''; ?>" placeholder="Örn: 1001">
+                    <label for="user_number">Okul Numarası</label>
+                    <input type="number" inputmode="numeric" pattern="[0-9]*" name="user_number" class="form-control <?php echo (!empty($data['user_number_err'])) ? 'is-invalid' : ''; ?>" value="<?php echo isset($data['user_number']) ? $data['user_number'] : ''; ?>" placeholder="Örn: 1001 / 2001">
                     <span class="invalid-feedback"><?php echo isset($data['user_number_err']) ? $data['user_number_err'] : ''; ?></span>
                 </div>
                 <div class="form-group col">
@@ -56,7 +56,7 @@
             </div>
 
             <div class="form-group mt-4">
-                <button type="submit" class="btn btn-primary btn-block">Kayıt Ol</button>
+                <button type="submit" class="btn btn-primary btn-block">Hesabı Aktifleştir</button>
             </div>
 
             <div class="text-center mt-3 auth-footer">

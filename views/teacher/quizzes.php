@@ -95,9 +95,13 @@
                                     </td>
                                     <td style="padding: 10px;">
                                         <a href="<?php echo URLROOT; ?>/teacher/manageQuestions/<?php echo $quiz->id; ?>" class="btn btn-primary" style="padding: 5px 10px; font-size: 0.8rem; width: auto; background-color: var(--accent); margin-right: 5px;">Soruları Yönet</a>
-                                        <a href="<?php echo URLROOT; ?>/teacher/quizResults/<?php echo $quiz->id; ?>" class="btn btn-primary" style="padding: 5px 10px; font-size: 0.8rem; width: auto; background-color: var(--success);">
+                                        <a href="<?php echo URLROOT; ?>/teacher/quizResults/<?php echo $quiz->id; ?>" class="btn btn-primary" style="padding: 5px 10px; font-size: 0.8rem; width: auto; background-color: var(--success); margin-right: 5px;">
                                             <i class="fa-solid fa-square-poll-vertical"></i> Sonuçlar ve Fotoğraflar
                                         </a>
+                                        
+                                        <button onclick="deleteQuiz(<?php echo $quiz->id; ?>)" class="btn btn-primary" style="padding: 5px 10px; font-size: 0.8rem; width: auto; background-color: var(--danger);">
+                                            <i class="fa-solid fa-trash"></i> Sil
+                                        </button>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
@@ -133,7 +137,25 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 });
 
-
+async function deleteQuiz(id) {
+    if (confirm('Bu sınavı silmek istediğinize emin misiniz? Sınava ait tüm sorular ve öğrenci sonuçları kalıcı olarak silinecektir.')) {
+        try {
+            const formData = new FormData();
+            formData.append('csrf_token', document.getElementById('csrf_token').value);
+            
+            const response = await AjaxHelper.post('<?php echo URLROOT; ?>/teacher/deleteQuiz/' + id, formData);
+            if (response.success) {
+                alert(response.message);
+                window.location.reload();
+            } else {
+                alert(response.message || 'Bir hata oluştu');
+            }
+        } catch (error) {
+            console.error(error);
+            alert('Silme işlemi sırasında bir hata oluştu.');
+        }
+    }
+}
 </script>
 
 <?php require '../views/layouts/footer.php'; ?>
