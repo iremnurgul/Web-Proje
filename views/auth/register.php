@@ -26,7 +26,7 @@
             <div class="form-row">
                 <div class="form-group col">
                     <label for="user_number">Okul Numarası</label>
-                    <input type="number" inputmode="numeric" pattern="[0-9]*" name="user_number" class="form-control <?php echo (!empty($data['user_number_err'])) ? 'is-invalid' : ''; ?>" value="<?php echo isset($data['user_number']) ? $data['user_number'] : ''; ?>" placeholder="Örn: 1001 / 2001">
+                    <input type="number" inputmode="numeric" pattern="[0-9]*" name="user_number" class="form-control <?php echo (!empty($data['user_number_err'])) ? 'is-invalid' : ''; ?>" value="<?php echo isset($data['user_number']) ? $data['user_number'] : ''; ?>">
                     <span class="invalid-feedback"><?php echo isset($data['user_number_err']) ? $data['user_number_err'] : ''; ?></span>
                 </div>
                 <div class="form-group col">
@@ -45,12 +45,12 @@
             <div class="form-row">
                 <div class="form-group col">
                     <label for="password">Şifre</label>
-                    <input type="password" name="password" class="form-control <?php echo (!empty($data['password_err'])) ? 'is-invalid' : ''; ?>" value="<?php echo isset($data['password']) ? $data['password'] : ''; ?>">
+                    <input type="password" name="password" class="form-control <?php echo (!empty($data['password_err'])) ? 'is-invalid' : ''; ?>">
                     <span class="invalid-feedback"><?php echo isset($data['password_err']) ? $data['password_err'] : ''; ?></span>
                 </div>
                 <div class="form-group col">
                     <label for="confirm_password">Şifre Tekrar</label>
-                    <input type="password" name="confirm_password" class="form-control <?php echo (!empty($data['confirm_password_err'])) ? 'is-invalid' : ''; ?>" value="<?php echo isset($data['confirm_password']) ? $data['confirm_password'] : ''; ?>">
+                    <input type="password" name="confirm_password" class="form-control <?php echo (!empty($data['confirm_password_err'])) ? 'is-invalid' : ''; ?>">
                     <span class="invalid-feedback"><?php echo isset($data['confirm_password_err']) ? $data['confirm_password_err'] : ''; ?></span>
                 </div>
             </div>

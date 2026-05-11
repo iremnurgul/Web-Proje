@@ -67,11 +67,11 @@ class Teacher extends Controller {
                 if($userModel->updateProfile($data)) {
                     $_SESSION['user_first_name'] = $data['first_name'];
                     $_SESSION['user_last_name'] = $data['last_name'];
-                    Session::flash('profile_success', 'Profiliniz baÅŸarÄ±yla gÃ¼ncellendi.');
+                    Session::flash('profile_success', 'Profiliniz başarıyla güncellendi.');
                     header('Location: ' . URLROOT . '/teacher/profile');
                     exit;
                 } else {
-                    $data['error'] = 'GÃ¼ncelleme sÄ±rasÄ±nda bir hata oluÅŸtu.';
+                    $data['error'] = 'Güncelleme sırasında bir hata oluştu.';
                 }
             }
             
